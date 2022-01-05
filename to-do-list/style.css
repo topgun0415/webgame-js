@@ -1,0 +1,81 @@
+/** @format */
+body {
+  margin: 0;
+  background-color: rgb(161, 250, 220);
+}
+
+div,
+h1,
+p,
+h2 {
+  box-sizing: border-box;
+}
+
+.global-container {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.title-container {
+  position: relative;
+  background-color: dodgerblue;
+  border: 0px dodgerblue solid;
+  color: white;
+  border-radius: 7px;
+  font-size: 15px;
+  text-align: center;
+  margin: 10px 200px;
+  height: 60px;
+  padding: 15px;
+}
+
+.title-container h1 {
+  margin: 0;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  border: 4px dodgerblue solid;
+  border-radius: 10px;
+  height: 600px;
+  padding: 20px;
+}
+
+.input-container input {
+  width: 220px;
+  height: 50px;
+  text-align: center;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  background-color: transparent;
+  border-bottom: 4px dodgerblue solid;
+  border-radius: 4px;
+  font-size: 30px;
+  font-weight: 800;
+  color: dodgerblue;
+}
+
+input:focus {
+  outline: none;
+}
+
+.hidden {
+  display: hidden;
+}
+
+.list {
+  padding: 0;
+}
+
+li {
+  font-size: 30px;
+  font-weight: bold;
+  color: dodgerblue;
+  list-style: decimal;
+  margin-top: 10px;
+}
