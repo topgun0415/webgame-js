@@ -1,0 +1,146 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>word-relay</title>
+  </head>
+  <body style="box-sizing: border-box; margin: 0">
+    <h1>This is word-relay game</h1>
+    <div style="font-weight: bold; color: coral; font-size: 50px">
+      <span id="order">1</span> player
+    </div>
+
+    <!-- word showing box -->
+    <div
+      style="
+        width: 200px;
+        height: 20px;
+        border-radius: 5px;
+        border: 3px solid dodgerblue;
+        background-color: dodgerblue;
+        color: white;
+        text-align: center;
+        padding: 25px;
+      "
+    >
+      <span id="word" style="font-weight: bolder; font-size: 20px"
+        >word showing box</span
+      >
+    </div>
+    <br />
+
+    <!-- word input box -->
+    <input type="text" maxlength="3" />
+    <!-- input btn  -->
+    <button>Button</button>
+    <script>
+      // 1. prompt 함수를 사용해 몇 명이 참가할지를 선택할 때 사용자가 취소를 누르면 다음 코드가 실행되지 않도록
+      // 2. 쿵쿵따를 세글자로 제한하기
+
+      // Selectors
+      const $order = document.querySelector('#order');
+      const $word = document.querySelector('#word');
+      const $btn = document.querySelector('button');
+      const $input = document.querySelector('input');
+
+      // Variable
+      let word; // 제시어
+      let newWord; // 입력어
+
+      // Greeting
+      const players = Number(prompt('How many person do you want to play?'));
+      alert(`There are ${players} players `);
+      confirm('Are you sure?');
+
+      $input.addEventListener('input', (e) => {
+        if ($input.value.length < 4) {
+          wordLower = e.target.value;
+          newWord = wordLower.toLowerCase();
+        } else {
+          alert('three words only!');
+        }
+      });
+
+      // Prompt result = 0 ?
+      if (players >= 2) {
+        $btn.addEventListener('click', (e) => {
+          // word-relay
+          if (!word) {
+            // 제시어가 비어있는 경우
+            word = newWord;
+            $word.textContent = word;
+            $input.value = '';
+            console.log(word[word.length - 1]);
+          } else {
+            // 제시어가 비어있지 않은 경우
+            if (word[word.length - 1] !== newWord[0]) {
+              alert('Please write your word again');
+            } else {
+              // add player number
+              if (parseInt($order.innerText) === players) {
+                $order.innerText = 1;
+              } else {
+                ++$order.innerText;
+              }
+              word = newWord;
+              $word.textContent = word;
+              $input.value = '';
+            }
+          }
+          $input.focus();
+        });
+      }
+
+      // 웹게임의 구현 목적이나 기능들은 문제없었지만 정석코드와 비교해서 40줄 가량 더 많고 지저분하다. 조금 더 조건문에서 || 와 && 를 사용하여 더 조건들을 촘촘하게 만들어야 할 것 같음. 특히나 Click 이벤트의 첫 조건문인 if(newWord.length === 3 &&(!word || word[word.length - 1] === newWord[0])) 이 코드 한줄이 30줄 가량을 적게 해줬으므로 충분히 다음부터는 참고할 것.
+    </script>
+
+    <script>
+      /* 정석 클린 코드 
+
+      const number = Number(prompt('몇 명이 참가하나요?'));
+
+      if (number) {
+        const $button = document.querySelector('button');
+        const $input = document.querySelector('input');
+        const $word = document.querySelector('#word');
+        const $order = document.querySelector('#order');
+        let word; // 제시어
+        let newWord; // 새로 입력한 단어
+
+        const onClickButton = () => {
+          if (
+            newWord.length === 3 &&
+            (!word || word[word.length - 1] === newWord[0])
+          ) {
+            // 제시어가 비어 있는가?
+            // 비어 있다.
+            word = newWord; // 입력한 단어가 제시어가 된다.
+            $word.textContent = word;
+            const order = Number($order.textContent); // 현재 순서
+            if (order + 1 > number) {
+              $order.textContent = 1;
+            } else {
+              $order.textContent = order + 1;
+            }
+          } else {
+            // 올바르지 않은가
+            alert('올바르지 않은 단어입니다!');
+          }
+          $input.value = '';
+          $input.focus();
+        };
+        const onInput = (event) => {
+          newWord = event.target.value;
+        };
+
+        $button.addEventListener('click', onClickButton);
+        $input.addEventListener('input', onInput);
+      }
+      */
+    </script>
+  </body>
+</html>
