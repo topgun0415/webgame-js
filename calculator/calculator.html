@@ -46,69 +46,69 @@
   <script>
 
     // Variables
-    let numberOne;
-    let numberTwo;
-    let operator; 
+    let numberOne = '';
+    let numberTwo = '';
+    let operator = ''; 
 
     // Selectors (Input)
     const $operator = document.querySelector('#operator');
     const $result = document.querySelector('#result');
+    const onClickNumber = (event) => {
+      if(!operator) {
+        numberOne += event.target.textContent;
+      } else {
+        numberTwo += event.target.textContent;
+      }
+      $result.value += event.target.textContent;
+      console.log(numberOne);
+      console.log(numberTwo);
+    }
+    
+    // const onClickNumber = (number) => (event) => {
+    //   if(!operator) {
+    //     numberOne += number;
+    //   } else {
+    //     numberTwo += number;
+    //   }
+    //   $result.value += number;
+    //   console.log(numberOne);
+    //   console.log(numberTwo);
+    // } // 고차함수 (High order function)
+
+    const onClickOperator = (event) => {
+      if(numberOne) {
+         operator = event.target.textContent;
+         $result.value = '';
+         $operator.value = operator;
+      } else {
+        alert('Please press number first!');
+      }
+    }
+
     // Selectors (Number)  
-    document.querySelector('#num-0').addEventListener('click', () => {
-      numberVerify('0');
-    });
-    document.querySelector('#num-1').addEventListener('click', () => {
-      numberVerify('1');
-    });
-    document.querySelector('#num-2').addEventListener('click', () => {
-      numberVerify('2');
-    });
-    document.querySelector('#num-3').addEventListener('click', () => {
-      numberVerify('3');
-    });
-    document.querySelector('#num-4').addEventListener('click', () => {
-      numberVerify('4');
-    });
-    document.querySelector('#num-5').addEventListener('click', () => {
-      numberVerify('5');
-    });
-    document.querySelector('#num-6').addEventListener('click', () => {
-      numberVerify('6');
-    });
-    document.querySelector('#num-7').addEventListener('click', () => {
-      numberVerify('7');
-    });
-    document.querySelector('#num-8').addEventListener('click', () => {
-      numberVerify('8');
-    });
-    document.querySelector('#num-9').addEventListener('click', () => {
-      numberVerify('9');
-    });
+    document.querySelector('#num-0').addEventListener('click', onClickNumber);
+    document.querySelector('#num-1').addEventListener('click', onClickNumber);
+    document.querySelector('#num-2').addEventListener('click', onClickNumber);
+    document.querySelector('#num-3').addEventListener('click', onClickNumber);
+    document.querySelector('#num-4').addEventListener('click', onClickNumber);
+    document.querySelector('#num-5').addEventListener('click', onClickNumber);
+    document.querySelector('#num-6').addEventListener('click', onClickNumber);
+    document.querySelector('#num-7').addEventListener('click', onClickNumber);
+    document.querySelector('#num-8').addEventListener('click', onClickNumber);
+    document.querySelector('#num-9').addEventListener('click', onClickNumber);
     // Selectors (Operators)
-    document.querySelector('#divide').addEventListener('click', () => {});
-    document.querySelector('#plus').addEventListener('click', () => {});
-    document.querySelector('#minus').addEventListener('click', () => {});
-    document.querySelector('#multiply').addEventListener('click', () => {});
+    document.querySelector('#divide').addEventListener('click', onClickOperator);
+    document.querySelector('#plus').addEventListener('click', onClickOperator);
+    document.querySelector('#minus').addEventListener('click', onClickOperator);
+    document.querySelector('#multiply').addEventListener('click', onClickOperator);
     document.querySelector('#calculate').addEventListener('click', () => {});
     document.querySelector('#clear').addEventListener('click', () => {
       numberOne = '';
       numberTwo = '';
+      operator = '';
       $result.value = '';
+      $operator.value = '';
     });
     
-    
-
-    function numberVerify(number) {
-      if(!operator) {
-        numberOne = number;
-      } else {
-        numberTwo += number;
-      }
-      $result.value += number;
-    }
-
-  
-    
-
   </script>
 </html>
