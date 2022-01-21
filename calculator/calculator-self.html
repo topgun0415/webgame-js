@@ -89,7 +89,14 @@
       } 
 
       // Quiz : -값 구하기 : 나중에.. 실력이 아직 안됨 
-      
+      if(event = '-' ) {
+        if(!numberOne) {
+          numberOne += event;
+          $result.value = numberOne;
+        } 
+      }
+
+
       numberOne = $result.value;
       numberTwo = '';
     }
