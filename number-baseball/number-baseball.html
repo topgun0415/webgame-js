@@ -3,11 +3,14 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>숫자야구</title>
+    <title>number-baseball</title>
   </head>
   <body>
+    <!-- better put input box in form tag (this is Web starndard rule)-->
+
     <form id="form">
-      <input type="text" id="input" />
+      <!-- required에 minlength , maxlength , pattern = 'regex 정규표현식' -->
+      <input type="text" id="input" required minlength="4" maxlength="4" />
       <button>확인</button>
     </form>
     <div id="logs"></div>
@@ -15,6 +18,101 @@
       const $input = document.querySelector('#input');
       const $form = document.querySelector('#form');
       const $logs = document.querySelector('#logs');
+
+      // numbers 에 1~9로 넣은 뒤에 중복이 나지않게 하나하나씩 빼줌
+      const numbers = [];
+      for (let i = 0; i < 10; i++) {
+        numbers.push(i);
+      }
+
+      let answer = [];
+      for (let i = 0; i < 4; i++) {
+        let index = Math.floor(Math.random() * numbers.length);
+        answer.push(numbers[index]);
+        numbers.splice(index, 1);
+        console.log(answer);
+      }
+
+      // const answer = [];
+      // for (let i = 0; i < 4; i++) {
+      //   answer[i] = Math.ceil(Math.random() * 10);
+      //   console.log(answer);
+      // }
+
+      // function that valid input value
+      const tries = [];
+      function checkInput(input) {
+        if (!input) {
+          return alert('Please enter numbers first');
+        } else if (input.value === NaN || input.length !== 4) {
+          return alert('Please type four numbers');
+        } else if (tries.includes(input)) {
+          return alert('You already typed same number');
+        } else if (new Set(input).size !== 4) {
+          return alert('You can not write same numbers at once ');
+        } else {
+          return true;
+        }
+      }
+
+      $form.addEventListener('submit', (event) => {
+        event.preventDefault(); // form 의 기본속성은 현재 페이지가 submit 이벤트를 진행하면서 새로고침 되는걸 막아야 한다.
+        const value = $input.value; // 입력 된 4자리 값
+        $input.value = '';
+
+        // Verify answer
+        if (!checkInput(value)) {
+          return;
+        }
+        // if answer
+        if (value === answer.join('')) {
+          $logs.textContent = 'Homerun! You win!!';
+          return;
+        }
+        // if not answer && over 10 times
+        if (tries.length >= 9) {
+          const message = document.createTextNode(
+            `10 Out! You lose!! The answer is ${answer.join('')}`
+          );
+          $logs.appendChild(message);
+          return;
+        }
+
+        // Ball , Strike verify
+        let strike = 0;
+        let ball = 0;
+        let out = tries.length;
+
+        // indexof 로 -1 이 나오면 안적으면 되는거고 , 인덱스 번호가 나오면 그 번호에 0이 나오면 strike 가 올라가고 1이 나오면 ball 올라가면된다.
+
+        for (let i = 0; i < answer.length; i++) {
+          const index = value.indexOf(answer[i]);
+          if (index !== -1) {
+            if (index === i) {
+              strike += 1;
+            } else {
+              ball += 1;
+            }
+          }
+        }
+        // const message = document.createTextNode(
+        //   ` NUMBER : ${value} STRIKE : ${strike} BALL : ${ball} OUT : ${
+        //     out + 1
+        //   }`
+        // );
+        // $logs.append(message, document.createElement('br'));
+
+        $logs.append(
+          ` NUMBER : ${value} STRIKE : ${strike} BALL : ${ball} OUT : ${
+            out + 1
+          }`,
+          document.createElement('br')
+        );
+
+        tries.push(value);
+        console.log(tries, tries.length);
+        $input.focus();
+      });
     </script>
   </body>
 </html>
