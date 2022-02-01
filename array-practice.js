@@ -41,3 +41,25 @@ function filterRange(arr, a, b) {
 정답에서는 Array.prototype.filter 메서드를 사용해서 작성하였지만 문제에서는 어떠한 배열메서드를 써도 상관없었기에 slice()를 사용하였다.
 충분히 filter 메서드도 사용할줄 알기에 더 쉬운 방법을 사용. 
 */
+
+// 3. Make a new Array function (main array change)
+
+let arr1 = [5, 3, 8, 1];
+let arr2 = [2, 4, 6, 5, 8, 10, 1];
+
+function filterRangeInPlace(arr, a, b) {
+  for (let i = 0; i < arr.length; i++) {
+    console.log(i);
+    let value = arr[i]; // 5
+
+    if (value < a || b < value) {
+      arr.splice(i, 1);
+      i--;
+    }
+  }
+}
+
+filterRangeInPlace(arr1, 1, 4);
+console.log(arr1); // [ 3, 1 ]
+filterRangeInPlace(arr2, 2, 5); // 2, 4, 5
+console.log(arr2);
