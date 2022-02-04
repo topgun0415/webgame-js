@@ -83,3 +83,41 @@ const sorted = copySorted(arr5);
 
 console.log(arr5); // [ 'HTML', 'JavaScript', 'CSS' ]
 console.log(sorted); // [ 'CSS', 'HTML', 'JavaScript' ]
+
+// 6. 확장 가능한 계산기 (추가 기능은 구현 못함)
+
+function Calculator(number) {
+  this.calculate = function (count) {
+    const counts = count.split(' '); // [ '3', '+', '7' ]
+    const firstNum = Number(counts[0]);
+    const secondNum = Number(counts[2]);
+    const fomula = counts[1];
+    let answer = 0;
+
+    if (fomula === '+') {
+      answer = firstNum + secondNum;
+    }
+
+    if (fomula === '-') {
+      answer = firstNum - secondNum;
+    }
+
+    return answer;
+  };
+}
+
+const calc = new Calculator();
+console.log(calc.calculate('3 - 7')); // -4
+console.log(calc.calculate('3 + 7')); // 10
+console.log(calc.calculate('3 + 15')); // 18
+
+// Need to use more object like { } so that I can add new counter function not only plus and minus also divide, time.
+
+// 7. 이름 맵핑하기
+let john = { name: 'John', age: 25 };
+let pete = { name: 'Pete', age: 30 };
+let mary = { name: 'Mary', age: 28 };
+let users = [john, pete, mary];
+
+let names = users.map((item) => item.name);
+console.log(names); // [ 'John', 'Pete', 'Mary' ]
