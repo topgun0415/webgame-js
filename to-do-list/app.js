@@ -1,25 +1,57 @@
 /** @format */
-
+// Selectors
 const $form = document.querySelector('.form-container');
 const $input = document.querySelector('.input');
 const $list = document.querySelector('.list');
 
-let lists = [];
+// Variables
+let listArr = [];
 
-function onPaintList() {
+// Functions
+
+function onPaintList(e) {
   const li = document.createElement('li');
-  console.log(li);
-  $list.appendChild(li);
+  const span = document.createElement('span');
+  const button = document.createElement('button');
+
+  if (listArr.length < 13) {
+    $list.appendChild(li);
+    li.appendChild(span);
+    span.textContent = `${$input.value}`;
+    $input.value = '';
+
+    span.addEventListener('click', (e) => {
+      const lineList = e.target;
+      lineList.classList.toggle('onList');
+    });
+
+    button.textContent = '❌';
+    li.appendChild(button);
+    button.type = 'button';
+    button.addEventListener('click', (e) => {
+      const delList = e.target.parentElement;
+      delList.remove();
+      listArr.pop();
+    });
+  } else {
+    alert("You can't put over 13 lists ");
+  }
 }
 
 function onEnterHandler(e) {
   e.preventDefault();
+  if (!$input.value) {
+    alert('Please enter your list');
+    return;
+  }
   let list = $input.value;
-  lists.push(list);
+  listArr.push(list);
   list = '';
-  console.log(lists);
+  console.log(listArr);
   onPaintList();
 }
+
+// Events
 
 $form.addEventListener('submit', onEnterHandler);
 
