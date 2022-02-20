@@ -79,3 +79,7 @@ li {
   list-style: decimal;
   margin-top: 10px;
 }
+
+.onList {
+  text-decoration: red line-through;
+}
