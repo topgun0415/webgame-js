@@ -1,0 +1,62 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lotto API</title>
+    <style>
+      .ball {
+        display: inline-block;
+        border: 1px solid black;
+        border-radius: 20px;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 20px;
+        text-align: center;
+        margin-right: 20px;
+      }
+
+      .result {
+        font-size: 50px;
+        font-weight: 900;
+      }
+
+      .bonus {
+        font-size: 50px;
+        font-weight: 900;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="result">Result?</div>
+    <div class="bonus">Bonus?</div>
+    <script>
+      // querySelectors
+      const $result = document.querySelector('.result');
+      const $bonus = document.querySelector('.bonus');
+      // Variables
+      const candidate = Array(45)
+        .fill()
+        .map((v, i) => (v = i + 1));
+      const shuffle = [];
+
+      // 피셔 에이츠 셔플 알고리즘 : 45개를 전부 섞는걸 이렇게 부름
+      while (candidate.length > 0) {
+        const index = Math.floor(Math.random() * candidate.length);
+        const spliceArray = candidate.splice(index, 1);
+        // const spliceArray = candidate.splice(candidate[index],1); 이게 불가능한 이유는 splice 배열의 첫번째 인수가 index를 받음
+        const value = spliceArray[0];
+        shuffle.push(value);
+      }
+      console.log(shuffle);
+      // 1. 숫자를 45번까지 뽑은 다음에 숫자들이 중복되지 않도록 잘 섞어준다.
+      // 2, 뽑은 공들은 하나씩 result div창에다가 입력되고 총 6개의 공을 1초의 간격으로 넣어둔다
+      // 3. 모든 공들이 뽑혔으면 맨 마지막 공은 보너스 div창에다가 하나 넣어두면 마무리 된다.
+      // 4. 모든 공들이 검은색이기 때문에 색깔을 각 10번대 20번대 기준으로 넣어주기로 한다.
+    </script>
+  </body>
+</html>
