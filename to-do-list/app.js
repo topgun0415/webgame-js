@@ -6,7 +6,6 @@ const $list = document.querySelector('.list');
 
 // Variables
 let listArr = [];
-
 // Functions
 
 function onPaintList(e) {
@@ -25,13 +24,16 @@ function onPaintList(e) {
       lineList.classList.toggle('onList');
     });
 
-    button.textContent = '❌';
+    button.innerText = '❌';
     li.appendChild(button);
     button.type = 'button';
     button.addEventListener('click', (e) => {
       const delList = e.target.parentElement;
+      const delListFromArr = e.target.previousSibling.textContent;
+      const delIndex = listArr.indexOf(delListFromArr);
+      listArr.splice(delIndex, 1);
       delList.remove();
-      listArr.pop();
+      console.log(listArr);
     });
   } else {
     alert("You can't put over 13 lists ");
