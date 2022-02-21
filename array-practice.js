@@ -121,3 +121,26 @@ let users = [john, pete, mary];
 
 let names = users.map((item) => item.name);
 console.log(names); // [ 'John', 'Pete', 'Mary' ]
+
+// 8. 객체 매핑하기
+
+let john1 = { name: 'John', surname: 'Smith', id: 1 };
+let pete1 = { name: 'Pete', surname: 'Hunt', id: 2 };
+let mary1 = { name: 'Mary', surname: 'Key', id: 3 };
+
+let users1 = [john1, pete1, mary1];
+console.log(users1);
+
+let usersMapped = users1.map((v, i) => ({
+  fullName: `${v.name} ${v.surname}`,
+  id: i,
+}));
+console.log(usersMapped);
+console.log(usersMapped[0].fullName); // John Smith
+
+// let usersMapped = users1.map((v, i) => {
+//   fullName: `${v.name} ${v.surname}`,
+//   id: i,
+// });
+
+// 위와 같은 시도를 계속 했지만 계속해서 틀렸었다. 이유는 자바스크립트는 중괄호 { }를 만나면 이를 객체라 인식하지 않고 바로 함수본문이 시작되는 것이라 인식한다. 소괄호를 사용하면 이를 피할 수 있다.
