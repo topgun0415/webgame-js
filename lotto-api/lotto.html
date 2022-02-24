@@ -21,12 +21,12 @@
       }
 
       .result {
-        font-size: 50px;
+        font-size: 30px;
         font-weight: 900;
       }
 
       .bonus {
-        font-size: 50px;
+        font-size: 30px;
         font-weight: 900;
       }
     </style>
@@ -34,6 +34,7 @@
   <body>
     <div class="result">Result?</div>
     <div class="bonus">Bonus?</div>
+    <h2>Click the result Please!</h2>
     <script>
       // querySelectors
       const $result = document.querySelector('.result');
@@ -64,15 +65,59 @@
         shuffle.push(value);
       }
       const pickedNum = shuffle.slice(0, 6).sort((a, b) => a - b);
+      // sort 로 문자열을 오름차순 및 내림차순으로 하고 싶은 경우에는
+      // arr = ['apple', 'banana', 'grape', 'kiwi', 'orange']
+      // arr.slice().sort((a-b) => a[0].charCodeAt() - b[0].charCodeAt()) 문자열의 오름차순
+      // arr.slice().sort((a-b) => b[0].charCodeAt() - a[0].charCodeAt()) 문자열의 내림차순
+      // arr.slice().sort((a-b) => a.localeCompare(b)) 문자열의 사전순 오름차순
+      // arr.slice().sort((a-b) => b.localeCompare(a)) 문자열의 사전순 내림차순
+
       const bonus = shuffle[6];
       console.log(pickedNum, bonus);
+
+      function onClickHandler() {
+        for (let i = 0; i < pickedNum.length; i++) {
+          const span = document.createElement('span');
+          span.textContent = pickedNum[i];
+          span.classList.toggle('ball');
+          const num = span.textContent;
+          if (num < 10) {
+            span.style.backgroundColor = 'red';
+          } else if (num < 20) {
+            span.style.backgroundColor = 'orange';
+          } else if (num < 30) {
+            span.style.backgroundColor = 'yellow';
+          } else if (num < 40) {
+            span.style.backgroundColor = 'blue';
+          } else if (num < 50) {
+            span.style.backgroundColor = 'green';
+          }
+          setTimeout(() => {
+            $result.appendChild(span);
+          }, (i + 1) * 1000);
+        }
+        setTimeout(() => {
+          const span = document.createElement('span');
+          $bonus.appendChild(span);
+          span.textContent = bonus;
+          span.style.backgroundColor = 'violet';
+          span.classList.toggle('ball');
+        }, 9000);
+
+        // 중복 방지
+        $result.removeEventListener('click', onClickHandler);
+      }
+
+      $result.addEventListener('click', onClickHandler);
 
       // 1. 숫자를 45번까지 뽑은 다음에 숫자들이 중복되지 않도록 잘 섞어준다.
       // 2, 뽑은 공들은 하나씩 result div창에다가 입력되고 총 6개의 공을 1초의 간격으로 넣어둔다
       // 3. 모든 공들이 뽑혔으면 맨 마지막 공은 보너스 div창에다가 하나 넣어두면 마무리 된다.
       // 4. 모든 공들이 검은색이기 때문에 색깔을 각 10번대 20번대 기준으로 넣어주기로 한다.
+    </script>
 
-      const getter = new Promise(() => {});
+    <script>
+      // 이번 웹게임은 피츠 에이스 셔플 알고리즘을 제외한 것은 거의 다 혼자 만들어보았다. 확실히 엣날에 비해서 자바스크립트에 관해서 조금씩 능숙해지고 있다는 생각이 든다. 하지만 아직까지 DOM을 자유롭게 조작하는건 어려운것 같다. 뿐만 아니라 클로저를 이론으로만 배우고 이번처럼 for문에 var를 선언하여 클로저를 구현한것은 조금 이해하기 어려웠다. 그리고 execution context (실행컨텍스트) 관해서는 다시 한번 모던 딥 다이브 책을 참고해야할것 같다.
     </script>
   </body>
 </html>
