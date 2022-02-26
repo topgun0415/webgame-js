@@ -1,0 +1,140 @@
+<!-- @format -->
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>rock-paper-scissors self</title>
+    <style>
+      #computer {
+        width: 142px;
+        height: 200px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="computer"></div>
+    <div>
+      <button id="scissors" class="btn">가위</button>
+      <button id="rock" class="btn">바위</button>
+      <button id="paper" class="btn">보</button>
+    </div>
+    <div id="score">0</div>
+    <div id="battleScore"></div>
+    <script>
+      const $computer = document.querySelector('#computer');
+      const $scissors = document.querySelector('#scissors');
+      const $rock = document.querySelector('#rock');
+      const $paper = document.querySelector('#paper');
+      const $score = document.querySelector('#score');
+      const $battleScore = document.querySelector('#battleScore');
+      const image = './rsp.png';
+      let score = 0;
+      let computer = 0;
+      let user = 0;
+      // 이미지 스트라이프 : 서버에 이미지를 요청하는 횟수를 줄이기 위한 기법. 한 페이지안에 각각의 이미지들을 넣은 방식. 네이버에 가보면 스트라이프 파일을 볼 수 있다.
+      // 절대 경로 '/rsp.png' 다만 절대경로는 root 로부터 시작되기때문에 대부분의 윈도우는 C드라이브이고, 맥은 어떤 절대적인 경로로 시작함
+      // 상대 경로 './rsp.png'는 현재 내가 속해있는 곳에서 상대적인 위치로 시작되는 것임 ./ 이것이 내가 현재 속해져있는 폴더 ././ 는 부모
+
+      $computer.style.background = `url(${image}) 0px 0px`;
+      // $computer.style.background = `url(${image}) -220px 0px`;
+      // $computer.style.background = `url(${image}) -440px 0px`;
+      $computer.style.backgroundSize = 'auto 200px';
+
+      const rspX = {
+        rock: '-220px',
+        paper: '-440px ',
+        scissors: '0px',
+      };
+
+      let computerChoice = 'scissors';
+
+      function computerHandChanger() {
+        if (computerChoice === 'scissors') {
+          computerChoice = 'paper';
+        } else if (computerChoice === 'paper') {
+          computerChoice = 'rock';
+        } else if (computerChoice === 'rock') {
+          computerChoice = 'scissors';
+        }
+        $computer.style.background = `url(${image}) ${rspX[computerChoice]} 0px`;
+        $computer.style.backgroundSize = 'auto 200px';
+      }
+
+      let setTimer = setInterval(computerHandChanger, 45);
+      // flag 변수
+      let clickable = true;
+
+      function stoRspHandler(e) {
+        // 쓰로틀링 개념이랑 비슷함 1초 사이동안 클릭 이벤트를 부분 막아버리는 기능
+        if (clickable) {
+          clearInterval(setTimer);
+          clickable = false;
+          setTimeout(() => {
+            clickable = true;
+            setTimer = setInterval(computerHandChanger, 45);
+          }, 1000);
+        }
+        // $paper.removeEventListener('click', stoRspHandler);
+        // $rock.removeEventListener('click', stoRspHandler);
+        // $scissors.removeEventListener('click', stoRspHandler);
+
+        // setTimeout(() => {
+        //   clearInterval(setTimer);
+        //   setTimer = setInterval(computerHandChanger, 45);
+        //   $paper.addEventListener('click', stoRspHandler);
+        //   $rock.addEventListener('click', stoRspHandler);
+        //   $scissors.addEventListener('click', stoRspHandler);
+        // }, 1000);
+
+        // removeEventListener('event', 참조하는 값) : 저 참조하는 값이 완전히 일치 하지 않으면 실행되어지지 않는다. 특히나 객체와 같은 경우 객체 참조값이 틀려 오류를 범할 수 있다.
+        const scoreTable = {
+          rock: 1,
+          scissors: 0,
+          paper: -1,
+        };
+
+        const computerScore = scoreTable[computerChoice];
+        const userScore = scoreTable[e.target.id];
+        const matchResult = computerScore - userScore;
+        let message;
+
+        // matchResult에 일치하는 조건을 찾는 if문이 너무 많아질 경우에는 조건들을 배열로 만들어서 includes 메서드를 사용하면 간단하게 해결 가능
+        if (matchResult === 0) {
+          console.log('Draw');
+          message = 'Draw';
+        } else if (matchResult === 2 || matchResult === -1) {
+          console.log('Win');
+          ++score;
+          ++user;
+          message = 'Win';
+        } else if ([1, -2].includes(matchResult)) {
+          console.log('Lose');
+          --score;
+          ++computer;
+          message = 'Lose';
+        }
+        $score.textContent = `${message} : ${score}`;
+        console.log(`Computer = ${computer} User = ${user}`);
+
+        if (user === 3) {
+          $battleScore.innerText = 'User Win!';
+          $battleScore.style.color = 'red';
+          $paper.removeEventListener('click', stoRspHandler);
+          $rock.removeEventListener('click', stoRspHandler);
+          $scissors.removeEventListener('click', stoRspHandler);
+        } else if (computer === 3) {
+          $battleScore.innerText = 'Computer Win!';
+          $battleScore.style.color = 'blue';
+          $paper.removeEventListener('click', stoRspHandler);
+          $rock.removeEventListener('click', stoRspHandler);
+          $scissors.removeEventListener('click', stoRspHandler);
+        }
+      }
+      // event.target 으로 얻어온 값을 객체로 값을 주고 그 값을 객체[data]로 하면 그 받아온 데이터를 자바스크립트의 데이터로 바꿔줄 수 있음 (*매우 유용)
+      $paper.addEventListener('click', stoRspHandler);
+      $rock.addEventListener('click', stoRspHandler);
+      $scissors.addEventListener('click', stoRspHandler);
+    </script>
+  </body>
+</html>
