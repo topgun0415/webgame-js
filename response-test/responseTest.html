@@ -1,0 +1,69 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ResponseTest Game</title>
+    <style>
+      #screen {
+        width: 300px;
+        height: 200px;
+        text-align: center;
+        user-select: none;
+      }
+      #screen.waiting {
+        background-color: aqua;
+      }
+      #screen.ready {
+        background-color: red;
+        color: white;
+      }
+      #screen.now {
+        background-color: greenyellow;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- id와는 별개로 class에도 지정을 해줘서 상태변경이 가능하도록 지정한다. -->
+    <div id="screen" class="waiting">Click here to start!</div>
+    <div id="result"></div>
+    <script>
+      const $screen = document.querySelector('#screen');
+      const $result = document.querySelector('#result');
+
+      let currentClick = 0;
+      let resultClick = 0;
+
+      const triesStorage = [];
+      const result = triesStorage.map((v, i) => {});
+      const randomTime = Math.random() * 6;
+
+      console.log(randomTime);
+
+      let time = new Date();
+      console.log(time);
+
+      function screenChangeHandler(e) {
+        if (e.target.classList.contains('waiting')) {
+          $screen.className = 'ready';
+          $screen.textContent = 'Get ready to Click!';
+        } else if (e.target.classList.contains('ready')) {
+          $screen.className = 'waiting';
+          alert('Please click the screen when it is green!');
+        } else if (e.target.classList.contains('now')) {
+        }
+      }
+
+      $screen.addEventListener('click', screenChangeHandler);
+    </script>
+  </body>
+</html>
+
+<!-- 순서도 -->
+<!-- 1. Math random으로 1~5초까지의 임의의 숫자를 만든 뒤 setTimeout에 넣어준다 -->
+<!-- 2. 동시에 setTimeout에서 실행되면 className을 ready로 바꿔줌 또한 바뀐 그 시점을 new Date로 잡아서 저장해줌 변수로 -->
+<!-- 3. ready가 되면 user는 박스를 클릭할 것이고 클릭이벤트로 className과 누르는 그 시점을 다시 new Date로 잡아줌 -->
+<!-- 4. 눌렀으면 className을 now로 변경을 해주고 result div에 첫번쨰 new Date를 넣었던 변수에다가 ready 상태에서 누른 Date 객체의 정보를 빼버린 숫자를 넣어준다 -->
