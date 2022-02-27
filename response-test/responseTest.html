@@ -34,26 +34,49 @@
       const $screen = document.querySelector('#screen');
       const $result = document.querySelector('#result');
 
-      let currentClick = 0;
-      let resultClick = 0;
-
-      const triesStorage = [];
-      const result = triesStorage.map((v, i) => {});
-      const randomTime = Math.random() * 6;
-
-      console.log(randomTime);
-
-      let time = new Date();
-      console.log(time);
+      let beforeClick = 0;
+      let afterClick = 0;
+      let result = 0;
+      const Average = [];
+      let timerID;
 
       function screenChangeHandler(e) {
-        if (e.target.classList.contains('waiting')) {
-          $screen.className = 'ready';
-          $screen.textContent = 'Get ready to Click!';
-        } else if (e.target.classList.contains('ready')) {
-          $screen.className = 'waiting';
-          alert('Please click the screen when it is green!');
-        } else if (e.target.classList.contains('now')) {
+        const random = Math.random() * 4;
+        const randomTimer = Math.ceil(random * 1000);
+
+        if (randomTimer > 200) {
+          if (e.target.classList.contains('waiting')) {
+            $screen.classList.remove('waiting');
+            $screen.classList.add('ready');
+            $screen.textContent = 'Click when screen is green!';
+            console.log(randomTimer);
+            timerID = setTimeout(() => {
+              beforeClick = new Date();
+              $screen.classList.replace('ready', 'now');
+            }, randomTimer);
+          } else if (e.target.classList.contains('ready')) {
+            $screen.classList.replace('ready', 'waiting');
+            alert('Please click the screen when it is green!');
+            clearTimeout(timerID);
+          } else if (e.target.classList.contains('now')) {
+            afterClick = new Date();
+            result = afterClick - beforeClick;
+            Average.push(result);
+            const averageResult = Average.reduce(
+              (a, c, i, v) => a + c,
+              0 / Average.length
+            );
+            console.log(Average);
+            $result.style.fontSize = '15px';
+            $result.textContent = `Speed : ${result}ms Average : ${averageResult}ms `;
+            beforeClick = null; // 굳이 안써도 되나 혹시나 실수해서 변수값에 전 데이터값이 남아있을 경우 에러가 발생함
+            afterClick = null;
+            $screen.classList.remove('now');
+            $screen.classList.add('waiting');
+            $screen.innerText = 'Click here to start';
+          }
+        } else {
+          return;
         }
       }
 
@@ -67,3 +90,10 @@
 <!-- 2. 동시에 setTimeout에서 실행되면 className을 ready로 바꿔줌 또한 바뀐 그 시점을 new Date로 잡아서 저장해줌 변수로 -->
 <!-- 3. ready가 되면 user는 박스를 클릭할 것이고 클릭이벤트로 className과 누르는 그 시점을 다시 new Date로 잡아줌 -->
 <!-- 4. 눌렀으면 className을 now로 변경을 해주고 result div에 첫번쨰 new Date를 넣었던 변수에다가 ready 상태에서 누른 Date 객체의 정보를 빼버린 숫자를 넣어준다 -->
+
+<!-- const ans = [1, 2, 3, 4, 5].reduce((a, c, i) => {
+  a[c] = c * 10;
+  return a;
+}, {});
+
+console.log(ans); -->
