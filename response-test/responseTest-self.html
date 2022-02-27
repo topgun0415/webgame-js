@@ -1,0 +1,101 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ResponseTest Self Game</title>
+    <style>
+      #screen {
+        width: 300px;
+        height: 200px;
+        text-align: center;
+        user-select: none;
+      }
+      #screen.waiting {
+        background-color: aqua;
+      }
+      #screen.ready {
+        background-color: red;
+        color: white;
+      }
+      #screen.now {
+        background-color: greenyellow;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- id와는 별개로 class에도 지정을 해줘서 상태변경이 가능하도록 지정한다. -->
+    <div id="screen" class="waiting">Click here to start!</div>
+    <div id="result"></div>
+    <div id="records"></div>
+    <script>
+      const $screen = document.querySelector('#screen');
+      const $result = document.querySelector('#result');
+      const $records = document.querySelector('#records');
+
+      let beforeClick = 0;
+      let afterClick = 0;
+      let result = 0;
+      const Average = [];
+      let timerID;
+      let record = [];
+
+      function screenChangeHandler(e) {
+        const random = Math.random() * 4;
+        const randomTimer = Math.ceil(random * 1000);
+
+        if (randomTimer > 200) {
+          if (e.target.classList.contains('waiting')) {
+            // Entering
+            $screen.classList.remove('waiting');
+            $screen.classList.add('ready');
+            $screen.textContent = 'Click when screen is green!';
+            console.log(randomTimer);
+            timerID = setTimeout(() => {
+              beforeClick = new Date();
+              $screen.classList.replace('ready', 'now');
+            }, randomTimer);
+          } else if (e.target.classList.contains('ready')) {
+            // Click Error
+            $screen.classList.replace('ready', 'waiting');
+            alert('Please click the screen when it is green!');
+            clearTimeout(timerID);
+          } else if (e.target.classList.contains('now')) {
+            // Standby
+            afterClick = new Date();
+            result = afterClick - beforeClick;
+            Average.push(result);
+            const averageResult = Average.reduce(
+              (a, c, i, v) => a + c,
+              0 / Average.length
+            );
+            console.log(Average);
+            record = Average.slice(0, 5).sort((a, b) => a - b);
+            console.log(record);
+            $result.style.fontSize = '15px';
+            $records.style.backgroundColor = 'Yellow';
+            $records.style.width = '350px';
+            $result.textContent = `Speed : ${result}ms Average : ${averageResult}ms `;
+            $records.textContent = `Top 5 Record = ${record}`;
+
+            beforeClick = null; // 굳이 안써도 되나 혹시나 실수해서 변수값에 전 데이터값이 남아있을 경우 에러가 발생함
+            afterClick = null;
+            $screen.classList.remove('now');
+            $screen.classList.add('waiting');
+            $screen.innerText = 'Click here to start';
+          }
+        } else {
+          return;
+        }
+      }
+
+      $screen.addEventListener('click', screenChangeHandler);
+    </script>
+  </body>
+</html>
+
+<!-- Self Quiz -->
+<!-- 가장 빠른 다섯번의 시도가 몇초인지 보여주세요. 6번의 시도 또한 5번으로 보여주세요 -->
