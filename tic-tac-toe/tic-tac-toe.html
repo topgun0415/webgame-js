@@ -1,0 +1,69 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tic-tac-toc</title>
+    <style>
+      table {
+        border-collapse: collapse;
+      }
+
+      td {
+        border: 1px solid black;
+        width: 40px;
+        height: 40px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      const { body } = document; // destructuring : document의 속성과 변수명이 일치할 경우 이렇게 선언해버리면 다른 변수에서 다 빼버려도 상관없다.
+      const $result = document.createElement('result');
+      const $table = document.createElement('table');
+      let turn = 'O';
+      const row = [];
+
+      for (let i = 0; i < 3; i++) {
+        const $tr = document.createElement('tr');
+        $table.append($tr);
+        const cells = [];
+        for (let j = 0; j < 3; j++) {
+          // scope 때문에 상관은 없지만 그래도 혹시나 모르니 반복문 안에 반복문은 되도록이면 다른 변수 이름을 사용할 것
+          const $td = document.createElement('td');
+          cells.push($td);
+          $td.addEventListener('click', (e) => {
+            // Check valid space
+            if (e.target.textContent) {
+              alert('You can not click there ');
+              return;
+            } else if (!e.target.textContent) {
+              // Change turn
+              e.target.textContent = turn;
+              turn = turn === 'O' ? 'X' : 'O';
+              // if (turn === 'O') {
+              //   turn = 'X';
+              // } else if (turn === 'X') {
+              //   turn = 'O';
+              // }
+            }
+          });
+          $tr.append($td);
+        }
+        row.push(cells);
+      }
+
+      console.log(row);
+      document.body.append($table);
+      document.body.append($result);
+    </script>
+  </body>
+</html>
+
+<!-- table -->
+<!-- tr -->
+<!-- td -->
