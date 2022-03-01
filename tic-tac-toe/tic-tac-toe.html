@@ -28,6 +28,42 @@
       let turn = 'O';
       const row = [];
 
+      const callback = (e) => {
+        // Check valid space
+        if (e.target.textContent) {
+          alert('You can not click there ');
+          return;
+        } else if (!e.target.textContent) {
+          // Change turn
+          e.target.textContent = turn;
+          // 승부 판단하기
+          if (checkWinner(e.target)) {
+            $result.textContent = `'${turn}' turn won!`;
+            $table.removeEventListener('click', callback);
+            return;
+          }
+          // * 무승부 판단하기 : 지금은 forEach 문으로 반복했지만 매우 비효율적인 방법임. every,some 메서드를 사용해서 효율적이게 만들수있음 그전에 flat() 메서드로 1차원 배열로 만들것
+          let draw = 0;
+          row.forEach((v) => {
+            v.forEach((v2) => {
+              if (v2.textContent) {
+                ++draw;
+              }
+            });
+          });
+          if (draw === 9) {
+            $result.textContent = 'Draw';
+            return;
+          }
+          if (draw) turn = turn === 'O' ? 'X' : 'O';
+          // if (turn === 'O') {
+          //   turn = 'X';
+          // } else if (turn === 'X') {
+          //   turn = 'O';
+          // }
+        }
+      };
+
       for (let i = 0; i < 3; i++) {
         const $tr = document.createElement('tr');
         $table.append($tr);
@@ -37,40 +73,7 @@
           const $td = document.createElement('td');
           cell.push($td);
 
-          $td.addEventListener('click', (e) => {
-            // Check valid space
-            if (e.target.textContent) {
-              alert('You can not click there ');
-              return;
-            } else if (!e.target.textContent) {
-              // Change turn
-              e.target.textContent = turn;
-              // 승부 판단하기
-              if (checkWinner(e.target)) {
-                $result.textContent = `'${turn}' turn won!`;
-                return;
-              }
-              // 무승부 판단하기
-              let draw = 0;
-              row.forEach((v) => {
-                v.forEach((v2) => {
-                  if (v2.textContent) {
-                    ++draw;
-                  }
-                });
-              });
-              if (draw === 9) {
-                $result.textContent = 'Draw';
-                return;
-              }
-              if (draw) turn = turn === 'O' ? 'X' : 'O';
-              // if (turn === 'O') {
-              //   turn = 'X';
-              // } else if (turn === 'X') {
-              //   turn = 'O';
-              // }
-            }
-          });
+          $table.addEventListener('click', callback); // 이벤트 위임
           $tr.append($td);
         }
         row.push(cell);
@@ -83,6 +86,7 @@
         let rowIndex; // 행
         let cellIndex; // 열
 
+        // * 이것도 target.rowIndex 프로퍼티와 target.cellIndex 프로퍼티로 손쉽게 바꿀 수 있음. forEach로 안돌려도됨
         row.forEach((v, ri) => {
           v.forEach((v, ci) => {
             if (v === target) {
