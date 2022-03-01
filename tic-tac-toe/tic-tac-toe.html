@@ -31,11 +31,12 @@
       for (let i = 0; i < 3; i++) {
         const $tr = document.createElement('tr');
         $table.append($tr);
-        const cells = [];
+        const cell = [];
         for (let j = 0; j < 3; j++) {
           // scope 때문에 상관은 없지만 그래도 혹시나 모르니 반복문 안에 반복문은 되도록이면 다른 변수 이름을 사용할 것
           const $td = document.createElement('td');
-          cells.push($td);
+          cell.push($td);
+
           $td.addEventListener('click', (e) => {
             // Check valid space
             if (e.target.textContent) {
@@ -44,7 +45,25 @@
             } else if (!e.target.textContent) {
               // Change turn
               e.target.textContent = turn;
-              turn = turn === 'O' ? 'X' : 'O';
+              // 승부 판단하기
+              if (checkWinner(e.target)) {
+                $result.textContent = `'${turn}' turn won!`;
+                return;
+              }
+              // 무승부 판단하기
+              let draw = 0;
+              row.forEach((v) => {
+                v.forEach((v2) => {
+                  if (v2.textContent) {
+                    ++draw;
+                  }
+                });
+              });
+              if (draw === 9) {
+                $result.textContent = 'Draw';
+                return;
+              }
+              if (draw) turn = turn === 'O' ? 'X' : 'O';
               // if (turn === 'O') {
               //   turn = 'X';
               // } else if (turn === 'X') {
@@ -54,12 +73,61 @@
           });
           $tr.append($td);
         }
-        row.push(cells);
+        row.push(cell);
       }
 
-      console.log(row);
       document.body.append($table);
       document.body.append($result);
+
+      const checkWinner = (target) => {
+        let rowIndex; // 행
+        let cellIndex; // 열
+
+        row.forEach((v, ri) => {
+          v.forEach((v, ci) => {
+            if (v === target) {
+              rowIndex = ri;
+              cellIndex = ci;
+            }
+          });
+        });
+
+        // 3칸이 다 채워졌나?
+        let hasWinner = false; // 검사하는 것을 만들때는 언제나 false로 변수값을 설정해놓고 승자가 있으면 true로 바꿔주면됨
+
+        // 가로줄 검사
+        if (
+          row[rowIndex][0].textContent === turn &&
+          row[rowIndex][1].textContent === turn &&
+          row[rowIndex][2].textContent === turn
+        ) {
+          hasWinner = true;
+        }
+        // 세로줄 검사
+        if (
+          row[0][cellIndex].textContent === turn &&
+          row[1][cellIndex].textContent === turn &&
+          row[2][cellIndex].textContent === turn
+        ) {
+          hasWinner = true;
+        }
+        // 대각선 검사
+        if (
+          row[0][0].textContent === turn &&
+          row[1][1].textContent === turn &&
+          row[2][2].textContent === turn
+        ) {
+          hasWinner = true;
+        }
+        if (
+          row[0][2].textContent === turn &&
+          row[1][1].textContent === turn &&
+          row[2][0].textContent === turn
+        ) {
+          hasWinner = true;
+        }
+        return hasWinner;
+      };
     </script>
   </body>
 </html>
