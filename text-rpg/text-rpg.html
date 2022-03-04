@@ -10,8 +10,8 @@
   </head>
   <body>
     <form id="start-screen">
-      <input id="name-input" placeholder="주인공 이름을 입력하세요!" />
-      <button id="start">시작</button>
+      <input id="name-input" placeholder="Please enter your name!" />
+      <button id="start">Start</button>
     </form>
     <div id="screen">
       <div
@@ -20,7 +20,7 @@
           display: none;
           box-sizing: border-box;
           border: 5px orange solid;
-          width: 510px;
+          width: 600px;
         "
       >
         <span id="hero-name"></span>
@@ -30,18 +30,18 @@
         <span id="hero-att"></span>
       </div>
       <form id="game-menu" style="display: none">
-        <div id="menu-1">1.모험</div>
-        <div id="menu-2">2.휴식</div>
-        <div id="menu-3">3.종료</div>
-        <input id="menu-input" />
-        <button id="menu-button">입력</button>
+        <div id="menu-1">1.Adventure</div>
+        <div id="menu-2">2.Rest</div>
+        <div id="menu-3">3.The End</div>
+        <input id="menu-input" placeholder="Type number here" />
+        <button id="menu-button">Go</button>
       </form>
       <form id="battle-menu" style="display: none">
-        <div id="battle-1">1.공격</div>
-        <div id="battle-2">2.회복</div>
-        <div id="battle-3">3.도망</div>
-        <input id="battle-input" />
-        <button id="battle-button">입력</button>
+        <div id="battle-1">1.Attack</div>
+        <div id="battle-2">2.Heal</div>
+        <div id="battle-3">3.Run</div>
+        <input id="battle-input" placeholder="Type number here" />
+        <button id="battle-button">Go</button>
       </form>
       <div id="message"></div>
       <div id="monster-stat">
@@ -73,6 +73,16 @@
         hp: 100,
         xp: 0,
         att: 10,
+
+        attack(monster) {
+          monster.hp -= this.att;
+          this.hp -= monster.att;
+        },
+
+        heal(monster) {
+          this.hp += 20;
+          this.hp -= monster.att;
+        },
       };
 
       let monster = null;
@@ -109,26 +119,57 @@
         $heroAtt.style.fontWeight = 'bold';
       });
 
+      // Game Menu
       $gameMenu.addEventListener('submit', (e) => {
         e.preventDefault();
-        const menuNum = Number(e.target['menu-input'].value);
-        console.log(typeof menuNum);
-        if (menuNum === 1) {
-          console.log('Hello');
+        const gameMenuNum = Number(e.target['menu-input'].value);
+        if (gameMenuNum === 1) {
+          // * ADVENTURE
           $gameMenu.style.display = 'none';
           $batlleMenu.style.display = 'block';
+          // 이번장에서는 몬스터 리스트에서 계속해서 뽑아야 한다. 만약 얉은 복사하였다면 참조를 하기 때문에 사용자가 monster.hp 혹은 name 프로퍼티를 통해서 바꿀 수도 있을 뿐더러 만약에 몬스터와 싸워서 hp가 0이 된다면 몬스터 리스트의 피가 다 0 이 되어버리는 바람에 게임의 진행이 제대로 진행되지 않는다. 그나마 JSON.parse(JSON.Stringify()) 쓰는 것이 깊은 복사를 비슷하게 따라 쓸 수 있는것이며 정말로 쓰고싶다면 자바스크립트의 라이브러리인 lodash를 이용하여 Clone()을 사용하여야한다.
           monster = JSON.parse(
-            JSON.stringify([Math.floor(Math.random() * monsterList.length)])
+            JSON.stringify(
+              monsterList[Math.floor(Math.random() * monsterList.length)] // 깊은 복사
+              // monster = monsterList[0] 얕은 복사
+            )
           );
 
           monster.maxHp = monster.hp;
           console.log(monster);
           console.log(monster.name);
+          $monsterName.style.fontWeight = 'bold';
           $monsterName.textContent = `Monster : ${monster.name}`;
-          $monsterHP.textContent = `HP : ${monster.hp} / MaxHP : ${monster.maxHp}`;
+          $monsterHP.textContent = `HP : ${monster.hp} / ${monster.maxHp}`;
           $monsterAtt.textContent = `AttDamage : ${monster.att} `;
-        } else if (menuNum === 2) {
-        } else if (menuNum === 3) {
+        } else if (gameMenuNum === 2) {
+          // REST
+        } else if (gameMenuNum === 3) {
+          // END GAME
+        }
+      });
+
+      // Battle Menu
+      $batlleMenu.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const battleMenuNum = Number(e.target['battle-input'].value);
+        if (battleMenuNum === 1) {
+          // BATTLE
+          hero.attack(monster);
+          // monster.attack(hero);
+          $heroHP.textContent = `HP : ${hero.hp} / MaxHP : ${hero.maxHp}`;
+          $heroHP.style.color = 'red';
+          $heroHP.style.fontWeight = 'bold';
+          $monsterHP.textContent = `HP : ${monster.hp} / ${monster.maxHp}`;
+          $message.textContent = `You got ${hero.maxHp - hero.hp} damage from ${
+            monster.name
+          }`;
+          $message.style.color = 'red';
+          $message.style.backgroundColor = 'yellow';
+        } else if (battleMenuNum === 2) {
+          // HEAL
+        } else if (battleMenuNum === 3) {
+          // RUN
         }
       });
     </script>
