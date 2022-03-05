@@ -1,0 +1,197 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Text RPG Game</title>
+  </head>
+  <body>
+    <form id="start-screen">
+      <input id="name-input" placeholder="Please enter your name!" />
+      <button id="start">Start</button>
+    </form>
+    <div id="screen">
+      <div
+        id="hero-stat"
+        style="
+          display: none;
+          box-sizing: border-box;
+          border: 5px orange solid;
+          width: 600px;
+        "
+      >
+        <span id="hero-name"></span>
+        <span id="hero-level"></span>
+        <span id="hero-xp"></span>
+        <span id="hero-hp"></span>
+        <span id="hero-att"></span>
+      </div>
+      <form id="game-menu" style="display: none">
+        <div id="menu-1">1.Adventure</div>
+        <div id="menu-2">2.Rest</div>
+        <div id="menu-3">3.The End</div>
+        <input id="menu-input" placeholder="Type number here" />
+        <button id="menu-button">Go</button>
+      </form>
+      <form id="battle-menu" style="display: none">
+        <div id="battle-1">1.Attack</div>
+        <div id="battle-2">2.Heal</div>
+        <div id="battle-3">3.Run</div>
+        <input id="battle-input" placeholder="Type number here" />
+        <button id="battle-button">Go</button>
+      </form>
+      <div id="message"></div>
+      <div id="monster-stat">
+        <span id="monster-name"></span>
+        <span id="monster-hp"></span>
+        <span id="monster-att"></span>
+      </div>
+    </div>
+    <script>
+      const $heroStat = document.querySelector('#hero-stat');
+      const $startScreen = document.querySelector('#start-screen');
+      const $gameMenu = document.querySelector('#game-menu');
+      const $battleMenu = document.querySelector('#battle-menu');
+      const $heroName = document.querySelector('#hero-name');
+      const $heroLevel = document.querySelector('#hero-level');
+      const $heroHP = document.querySelector('#hero-hp');
+      const $heroXP = document.querySelector('#hero-xp');
+      const $heroAtt = document.querySelector('#hero-att');
+      const $message = document.querySelector('#message');
+      const $monsterName = document.querySelector('#monster-name');
+      const $monsterHP = document.querySelector('#monster-hp');
+      const $monsterAtt = document.querySelector('#monster-att');
+
+      // Class를 사용해서 각 객체들을 만들어줄 예정
+
+      // Game
+      class Game {
+        constructor(name) {
+          this.monster = null;
+          this.hero = null;
+          this.monsterList = [
+            { name: 'Zergling', hp: 25, att: 10, xp: 10 },
+            { name: 'Hydrarisk', hp: 50, att: 12, xp: 20 },
+            { name: 'Mutalrisk', hp: 75, att: 15, xp: 30 },
+            { name: 'Ultrarisk', hp: 100, att: 20, xp: 50 },
+          ];
+          this.start(name);
+        }
+        start(name) {
+          $gameMenu.addEventListener('submit', this.onGameMenuInput);
+          $battleMenu.addEventListener('submit', this.onBattleMenuInput);
+          this.changeScreen('game');
+          this.hero = new Hero(this, name);
+          this.updateHeroStat();
+        }
+
+        updateHeroStat() {
+          $heroStat.style.display = 'block';
+          const { hero } = this;
+          if (hero === null) {
+            $heroName.textContent = '';
+            $heroLevel.textContent = '';
+            $heroXP.textContent = '';
+            $heroHP.textContent = '';
+            $heroAtt.textContent = '';
+            return;
+          }
+          $heroName.textContent = hero.name;
+          $heroLevel.textContent = `${hero.lev}Lev`;
+          $heroXP.textContent = `XP : ${hero.xp}`;
+          $heroHP.textContent = `HP : ${hero.hp} / MAX_HP : ${hero.maxHp}`;
+          $heroAtt.textContent = `ATT : ${hero.att}`;
+        }
+
+        changeScreen(screen) {
+          if (screen === 'start') {
+            $startScreen.style.display = 'block';
+            $gameMenu.style.display = 'none';
+            $battleMenu.style.display = 'none';
+          } else if (screen === 'game') {
+            $startScreen.style.display = 'none';
+            $gameMenu.style.display = 'block';
+            $battleMenu.style.display = 'none';
+          } else if (screen === 'battle') {
+            $startScreen.style.display = 'none';
+            $gameMenu.style.display = 'none';
+            $battleMenu.style.display = 'block';
+          }
+        }
+
+        onGameMenuInput = (e) => {
+          e.preventDefault();
+          const input = Number(e.target['menu-input'].value);
+          if (input === 1) {
+            // ADVENTURE
+            console.log('ADVENTURE');
+            this.changeScreen('battle');
+          } else if (input === 2) {
+            // REST
+            console.log('REST');
+          } else if (input === 3) {
+            // END GAME
+            console.log('END GAME');
+          }
+        };
+
+        onBattleMenuInput = (e) => {
+          e.preventDefault();
+          const input = Number(e.target['battle-input'].value);
+          if (input === 1) {
+            // BATTLE
+          } else if (input === 2) {
+            // HEAL
+          } else if (input === 3) {
+            this.changeScreen('game');
+          }
+        };
+      }
+
+      // Hero
+      class Hero {
+        constructor(game, name) {
+          this.game = game;
+          this.name = name;
+          this.lev = 1;
+          this.hp = 100;
+          this.maxHp = 100;
+          this.xp = 0;
+          this.att = 10;
+        }
+        attack(target) {
+          target.hp -= this.att;
+        }
+
+        heal(monster) {
+          this.hp += 20;
+          this.hp -= monster.att;
+        }
+      }
+
+      // Monster
+      class Monster {
+        constructor(name, hp, att, xp) {
+          this.name = name;
+          this.hp = hp;
+          this.maxHp = hp;
+          this.att = att;
+          this.xp = xp;
+        }
+        attack(target) {
+          target.hp -= this.att;
+        }
+      }
+
+      let game = null;
+      $startScreen.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = e.target['name-input'].value;
+        game = new Game(name);
+      });
+    </script>
+  </body>
+</html>
