@@ -99,11 +99,45 @@
             $heroAtt.textContent = '';
             return;
           }
-          $heroName.textContent = hero.name;
-          $heroLevel.textContent = `${hero.lev}Lev`;
-          $heroXP.textContent = `XP : ${hero.xp}`;
-          $heroHP.textContent = `HP : ${hero.hp} / MAX_HP : ${hero.maxHp}`;
-          $heroAtt.textContent = `ATT : ${hero.att}`;
+          $heroStat.style.display = 'block';
+          $heroName.style.fontWeight = 'bold';
+          $heroName.textContent = `Character : ${hero.name}`;
+          $heroLevel.style.backgroundColor = 'yellow';
+          $heroLevel.style.fontWeight = 'bold';
+          $heroLevel.textContent = `Lv ${hero.lev}`;
+          $heroXP.textContent = `XP : ${hero.xp} / ${hero.lev * 15}`;
+          $heroXP.style.backgroundColor = 'yellow';
+          $heroXP.style.fontWeight = 'bold';
+          $heroHP.textContent = `HP : ${hero.hp} / MaxHP : ${hero.maxHp}`;
+          $heroHP.style.color = 'red';
+          $heroHP.style.fontWeight = 'bold';
+          $heroAtt.textContent = `AttDamage : ${hero.att}`;
+          $heroAtt.style.fontWeight = 'bold';
+        }
+
+        updateMonsterStat() {
+          const { monster } = this;
+          if (monster === null) {
+            $monsterHP.textContent = '';
+            $monsterAtt.textContent = '';
+            $monsterName.textContent = '';
+            return;
+          }
+
+          $monsterName.textContent = this.monster.name;
+          $monsterHP.textContent = `HP : ${monster.hp} / MaxHP : ${monster.maxHp}`;
+          $monsterAtt.textContent = `AttDamage : ${monster.att} `;
+        }
+
+        showMessage(message) {
+          $message.style.backgroundColor = 'yellow';
+          $message.style.color = 'red';
+          $message.style.fontWeight = 'bold';
+          $message.textContent = message;
+        }
+
+        quit() {
+          this.changeScreen('start');
         }
 
         changeScreen(screen) {
@@ -129,12 +163,42 @@
             // ADVENTURE
             console.log('ADVENTURE');
             this.changeScreen('battle');
+            const randomIndex = Math.floor(
+              Math.random() * this.monsterList.length
+            );
+            const randomMonster = this.monsterList[randomIndex];
+            this.monster = new Monster(
+              this,
+              randomMonster.name,
+              randomMonster.hp,
+              randomMonster.att,
+              randomMonster.xp
+            );
+
+            this.updateMonsterStat();
+            this.showMessage(`Monster appeared! It seems ${this.monster.name}`);
           } else if (input === 2) {
             // REST
             console.log('REST');
+            if (this.hero.hp > 85) {
+              setTimeout(() => {
+                this.hero.hp = 100;
+                this.showMessage('Your HP healed');
+                this.updateHeroStat();
+              }, 2500);
+            } else {
+              setTimeout(() => {
+                this.hero.hp += 15;
+                this.showMessage('Your HP healed');
+                this.updateHeroStat();
+              }, 2500);
+            }
           } else if (input === 3) {
             // END GAME
             console.log('END GAME');
+            this.hero = null;
+            this.changeScreen('start');
+            $heroStat.style.display = 'none';
           }
         };
 
@@ -143,9 +207,45 @@
           const input = Number(e.target['battle-input'].value);
           if (input === 1) {
             // BATTLE
+            const { hero, monster } = this;
+            this.hero.attack(this.monster);
+            this.monster.attack(this.hero);
+            this.updateHeroStat();
+            this.updateMonsterStat();
+
+            if (hero.hp <= 0) {
+              this.showMessage(
+                `You are dead by ${this.monster.name}! Please enter refresh and start again`
+              );
+              this.hero = null;
+              this.quit();
+              return;
+            } else if (this.monster.hp <= 0) {
+              this.showMessage(
+                `You killed monster! You got ${this.monster.xp}Xp`
+              );
+              hero.getXp(this.monster.xp);
+              this.monster = null;
+              this.changeScreen('game');
+
+              this.updateHeroStat();
+              this.updateMonsterStat();
+            } else {
+              this.showMessage(
+                `You got ${this.monster.att} damage from ${this.monster.name}`
+              );
+            }
           } else if (input === 2) {
             // HEAL
+            this.hero.heal(this.monster);
           } else if (input === 3) {
+            // RUN
+            this.showMessage();
+            this.monster = null;
+            $monsterAtt.textContent = '';
+            $monsterHP.textContent = '';
+            $monsterName.textContent = '';
+            this.updateHeroStat();
             this.changeScreen('game');
           }
         };
@@ -170,11 +270,21 @@
           this.hp += 20;
           this.hp -= monster.att;
         }
+
+        getXp(xp) {
+          this.xp += xp;
+          const levelUpXp = this.lev * 15;
+          if (this.xp > levelUpXp) {
+            ++this.lev;
+            this.att += 10;
+          }
+        }
       }
 
       // Monster
       class Monster {
-        constructor(name, hp, att, xp) {
+        constructor(game, name, hp, att, xp) {
+          this.game = game;
           this.name = name;
           this.hp = hp;
           this.maxHp = hp;
