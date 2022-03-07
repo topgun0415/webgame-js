@@ -199,6 +199,7 @@
             this.hero = null;
             this.changeScreen('start');
             $heroStat.style.display = 'none';
+            this.showMessage('');
           }
         };
 
@@ -237,7 +238,11 @@
             }
           } else if (input === 2) {
             // HEAL
-            this.hero.heal(this.monster);
+            const { hero, monster } = this;
+            hero.hp = Math.min(hero.maxHp, hero.hp + 20);
+            monster.attack(hero);
+            this.showMessage('You are healed!');
+            this.updateHeroStat();
           } else if (input === 3) {
             // RUN
             this.showMessage();
@@ -263,12 +268,14 @@
           this.att = 10;
         }
         attack(target) {
+          console.log('attack');
           target.hp -= this.att;
         }
 
         heal(monster) {
+          console.log('heal');
           this.hp += 20;
-          this.hp -= monster.att;
+          this.hp -= this.att;
         }
 
         getXp(xp) {
@@ -277,6 +284,7 @@
           if (this.xp > levelUpXp) {
             ++this.lev;
             this.att += 10;
+            this.xp = 0;
           }
         }
       }
