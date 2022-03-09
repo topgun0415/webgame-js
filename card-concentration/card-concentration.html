@@ -1,0 +1,153 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>card-concentration web game</title>
+    <style>
+      .card {
+        display: inline-block;
+        margin-right: 20px;
+        margin-bottom: 20px;
+        width: 70px;
+        height: 100px;
+        perspective: 140px;
+      }
+
+      .card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+      }
+
+      .card.flipped .card-inner {
+        transform: rotateY(180deg);
+      }
+
+      .card-front {
+        background: navy;
+      }
+
+      .card-front,
+      .card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 1px solid black;
+        backface-visibility: hidden;
+      }
+
+      .card-back {
+        transform: rotateY(180deg);
+      }
+
+      #timer {
+        font-size: 20px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrapper"></div>
+    <span id="timer">00 : 25</span>
+    <script>
+      const $wrapper = document.querySelector('#wrapper');
+      const $timer = document.querySelector('#timer');
+      /* Self Check 구현
+      const gameTime = new Date();
+      const
+      console.log(time.getSeconds());
+      $timer.textContent = time;
+      */
+
+      // Card Box
+
+      // Card Color & Shuffle
+      const total = 12; // Card Number
+      const cardColor = [
+        // Card Color
+        'red',
+        'darkkhaki',
+        'blue',
+        'mediumpurple',
+        'green',
+        'coral',
+      ];
+      const cardColorCopy = cardColor.concat(cardColor);
+      let shuffledCard = [];
+
+      // New Ace shuffle Using Array.prototype.concat(), splice()
+      function shuffle() {
+        for (let i = cardColorCopy.length; i > 0; --i) {
+          const index = parseInt(
+            Math.floor(Math.random() * cardColorCopy.length)
+          );
+          shuffledCard = shuffledCard.concat(cardColorCopy.splice(index, 1));
+          // const random = cardColorCopy.splice(index, 1);
+          // shuffledCard.push(random[0]);
+        }
+      }
+
+      function createCard(i) {
+        // div.card > div.card-inner > (div.card-front, div.card-back)
+        const card = document.createElement('div');
+        card.className = 'card';
+        const cardInner = document.createElement('div');
+        cardInner.className = 'card-inner';
+        const cardFront = document.createElement('div');
+        const cardBack = document.createElement('div');
+        cardFront.className = 'card-front';
+        cardBack.className = 'card-back';
+        cardBack.style.backgroundColor = shuffledCard[i];
+
+        $wrapper.append(card);
+        card.append(cardInner);
+        cardInner.append(cardFront, cardBack);
+        return card;
+      }
+
+      function onClickHandler(e) {
+        console.log(e.target);
+        const className 
+        if(e.target.class)
+
+        e.target.classList.toggle('card-front');
+      }
+
+      // game Start
+
+      function startGame() {
+        // Shuffle
+        shuffle();
+        for (let i = 0; i < total; i++) {
+          const card = createCard(i);
+          $wrapper.append(card);
+          card.addEventListener('click', onClickHandler);
+        }
+        const $card = document.querySelector('.card');
+        const $cards = document.querySelectorAll('.card');
+
+        // Flip Event (on)
+        $cards.forEach((v, i) => {
+          setTimeout(() => {
+            v.classList.toggle('flipped');
+          }, 100 * i);
+        });
+        // Flip Event (off)
+        $cards.forEach((v, i) => {
+          setTimeout(() => {
+            v.classList.toggle('flipped');
+          }, 5000);
+        });
+      }
+
+      startGame();
+    </script>
+  </body>
+</html>
