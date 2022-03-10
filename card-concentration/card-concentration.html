@@ -81,6 +81,8 @@
       ];
       const cardColorCopy = cardColor.concat(cardColor);
       let shuffledCard = [];
+      let clicked = [];
+      let completed = [];
 
       // New Ace shuffle Using Array.prototype.concat(), splice()
       function shuffle() {
@@ -113,15 +115,37 @@
       }
 
       function onClickHandler(e) {
-        console.log(e.target);
-        const className 
-        if(e.target.class)
+        this.classList.toggle('flipped');
+        clicked.push(this);
+        if (clicked.length !== 2) {
+          return;
+        }
 
-        e.target.classList.toggle('card-front');
+        const firstColor =
+          clicked[0].querySelector('.card-back').style.backgroundColor;
+        const secondColor =
+          clicked[1].querySelector('.card-back').style.backgroundColor;
+        if (firstColor === secondColor) {
+          completed = completed.concat(clicked);
+          clicked = [];
+
+          if (completed.length !== total) {
+            return;
+          }
+          setTimeout(() => {
+            alert('Congratuation!');
+          }, 1000);
+          return;
+        }
+
+        setTimeout(() => {
+          clicked[0].classList.remove('flipped');
+          clicked[1].classList.remove('flipped');
+          clicked = [];
+        }, 500);
       }
 
       // game Start
-
       function startGame() {
         // Shuffle
         shuffle();
@@ -130,6 +154,7 @@
           $wrapper.append(card);
           card.addEventListener('click', onClickHandler);
         }
+
         const $card = document.querySelector('.card');
         const $cards = document.querySelectorAll('.card');
 
@@ -143,11 +168,15 @@
         $cards.forEach((v, i) => {
           setTimeout(() => {
             v.classList.toggle('flipped');
-          }, 5000);
+          }, 2000);
         });
       }
 
       startGame();
+
+      function resetGame() {
+        $wrapper.innerHTML = '';
+      }
     </script>
   </body>
 </html>
