@@ -116,7 +116,8 @@
       }
 
       function onClickHandler(e) {
-        if (!clickable) {
+        // clickable flag 변수가 false || completed 배열에 자기 자신을 포함 || clicked 배열 첫번째에 자기 자신을 포함하면 함수가 실행되지 않음
+        if (!clickable || completed.includes(this) || clicked[0] === this) {
           return;
         }
 
@@ -129,25 +130,26 @@
           clicked[0].querySelector('.card-back').style.backgroundColor;
         const secondColor =
           clicked[1].querySelector('.card-back').style.backgroundColor;
+
         if (firstColor === secondColor) {
           completed = completed.concat(clicked);
           clicked = [];
-
           if (completed.length !== total) {
             return;
           }
           setTimeout(() => {
             alert('Congratuation!');
             resetGame();
-          }, 1000);
+          }, 800);
           return;
         }
-
+        clickable = false;
         setTimeout(() => {
           clicked[0].classList.remove('flipped');
           clicked[1].classList.remove('flipped');
           clicked = [];
-        }, 500);
+          clickable = true;
+        }, 900);
       }
 
       // game Start
@@ -174,7 +176,7 @@
           setTimeout(() => {
             v.classList.toggle('flipped');
             clickable = true;
-          }, 4000);
+          }, 3000);
         });
       }
 
