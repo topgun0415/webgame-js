@@ -1,0 +1,37 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clock Pratice</title>
+    <style>
+      .timer {
+        background: #2ce0bc;
+        margin-top: 1em;
+        padding: 0.1em 3em;
+        font-size: 4em;
+        border: 5px solid #828282;
+        border-radius: 50px;
+      }
+      .timer:hover {
+        background-color: #ffaaff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="timer"></div>
+    <script>
+      const $timer = document.querySelector('.timer');
+
+      function timer() {
+        let date = new Date();
+        $timer.textContent = date.toLocaleTimeString();
+      }
+
+      setInterval(timer, 100);
+    </script>
+  </body>
+</html>
