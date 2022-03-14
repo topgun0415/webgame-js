@@ -1,0 +1,210 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>card-concentration web game</title>
+    <style>
+      .card {
+        display: inline-block;
+        margin-right: 20px;
+        margin-bottom: 20px;
+        width: 70px;
+        height: 100px;
+        perspective: 140px;
+      }
+
+      .card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+      }
+
+      .card.flipped .card-inner {
+        transform: rotateY(180deg);
+      }
+
+      .card-front {
+        background: navy;
+      }
+
+      .card-front,
+      .card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 1px solid black;
+        backface-visibility: hidden;
+      }
+
+      .card-back {
+        transform: rotateY(180deg);
+      }
+
+      #timer {
+        font-size: 20px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="wrapper"></div>
+    <span id="timer"></span>
+    <script>
+      const $wrapper = document.querySelector('#wrapper');
+      const $timer = document.querySelector('#timer');
+      /* Self Check 구현
+      const gameTime = new Date();
+      const
+      console.log(time.getSeconds());
+      $timer.textContent = time;
+      */
+
+      // Card Box
+
+      // Card Color & Shuffle
+      const total = 12; // Card Number
+      const cardColor = [
+        // Card Color
+        'red',
+        'darkkhaki',
+        'blue',
+        'mediumpurple',
+        'green',
+        'coral',
+      ];
+      let cardColorCopy = cardColor.concat(cardColor);
+      let shuffledCard = [];
+      let clicked = [];
+      let completed = [];
+      let clickable = false;
+      const firstTime = new Date();
+      let timer = 0;
+      let timerEnd;
+
+      // New Ace shuffle Using Array.prototype.concat(), splice()
+      function shuffle() {
+        for (let i = cardColorCopy.length; i > 0; --i) {
+          const index = parseInt(
+            Math.floor(Math.random() * cardColorCopy.length)
+          );
+          shuffledCard = shuffledCard.concat(cardColorCopy.splice(index, 1));
+          // const random = cardColorCopy.splice(index, 1);
+          // shuffledCard.push(random[0]);
+        }
+      }
+
+      function createCard(i) {
+        // div.card > div.card-inner > (div.card-front, div.card-back)
+        const card = document.createElement('div');
+        card.className = 'card';
+        const cardInner = document.createElement('div');
+        cardInner.className = 'card-inner';
+        const cardFront = document.createElement('div');
+        const cardBack = document.createElement('div');
+        cardFront.className = 'card-front';
+        cardBack.className = 'card-back';
+        cardBack.style.backgroundColor = shuffledCard[i];
+
+        $wrapper.append(card);
+        card.append(cardInner);
+        cardInner.append(cardFront, cardBack);
+        return card;
+      }
+
+      function onClickHandler(e) {
+        // clickable flag 변수가 false || completed 배열에 자기 자신을 포함 || clicked 배열 첫번째에 자기 자신을 포함하면 함수가 실행되지 않음
+        if (!clickable || completed.includes(this) || clicked[0] === this) {
+          return;
+        }
+
+        this.classList.toggle('flipped');
+        clicked.push(this);
+        if (clicked.length !== 2) {
+          return;
+        }
+        const firstColor =
+          clicked[0].querySelector('.card-back').style.backgroundColor;
+        const secondColor =
+          clicked[1].querySelector('.card-back').style.backgroundColor;
+
+        if (firstColor === secondColor) {
+          completed = completed.concat(clicked);
+          clicked = [];
+          if (completed.length !== total) {
+            return;
+          }
+          setTimeout(() => {
+            clearInterval(timerEnd);
+            timer = 0;
+            const lastTime = new Date();
+            const resultTime = lastTime - firstTime;
+            $timer.textContent = `You got ${resultTime * 0.001}s`;
+            alert('Congratuation!');
+            resetGame();
+          }, 1000);
+          return;
+        }
+        clickable = false;
+        setTimeout(() => {
+          clicked[0].classList.remove('flipped');
+          clicked[1].classList.remove('flipped');
+          clicked = [];
+          clickable = true;
+        }, 900);
+      }
+
+      // game Start
+      function startGame() {
+        // Shuffle
+        timerShowing();
+        shuffle();
+        for (let i = 0; i < total; i++) {
+          const card = createCard(i);
+          $wrapper.append(card);
+          card.addEventListener('click', onClickHandler);
+        }
+
+        const $card = document.querySelector('.card');
+        const $cards = document.querySelectorAll('.card');
+
+        // Flip Event (on)
+        $cards.forEach((v, i) => {
+          setTimeout(() => {
+            v.classList.toggle('flipped');
+          }, 100 * i);
+        });
+        // Flip Event (off)
+        $cards.forEach((v, i) => {
+          setTimeout(() => {
+            v.classList.toggle('flipped');
+            clickable = true;
+          }, 3000);
+        });
+      }
+
+      startGame();
+
+      function resetGame() {
+        $wrapper.innerHTML = '';
+        cardColorCopy = cardColor.concat(cardColor);
+        shuffledCard = [];
+        completed = [];
+        startGame();
+      }
+
+      function timerShowing() {
+        timerEnd = setInterval(() => {
+          timer += 1;
+          $timer.textContent = `Timer : ${timer}s`;
+        }, 1000);
+      }
+    </script>
+  </body>
+</html>
